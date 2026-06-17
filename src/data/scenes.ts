@@ -1,4 +1,6 @@
 import archiveScene from "../assets/syrvael-archive-bg.png";
+import archivistCharacter from "../assets/characters/archivist.png";
+import archivistPortrait from "../assets/characters/archivist-portrait.png";
 import havrenoireScene from "../assets/scene-havrenoire.png";
 import hrimgardScene from "../assets/scene-hrimgard.png";
 import norathalScene from "../assets/scene-norathal.png";
@@ -8,6 +10,9 @@ export type SceneId = "archive" | "havrenoire" | "hrimgard" | "norathal";
 export type SceneDefinition = {
   accent: string;
   appOverlay: string;
+  characterAlt?: string;
+  characterImage?: string;
+  portraitImage?: string;
   eyebrow: string;
   image: string;
   sceneOverlay: string;
@@ -17,6 +22,9 @@ export type SceneDefinition = {
 export const scenes: Record<SceneId, SceneDefinition> = {
   archive: {
     accent: "#d9bd7a",
+    characterAlt: "Archiviste mysterieux de Syrvael",
+    characterImage: archivistCharacter,
+    portraitImage: archivistPortrait,
     appOverlay:
       "radial-gradient(circle at 10% 0%, rgba(218, 52, 106, 0.2), transparent 30%), linear-gradient(90deg, rgba(10, 10, 18, 0.94), rgba(10, 10, 18, 0.52) 45%, rgba(10, 10, 18, 0.9))",
     eyebrow: "Archives de Syrvaël",

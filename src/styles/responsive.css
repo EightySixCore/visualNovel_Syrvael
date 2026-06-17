@@ -49,9 +49,32 @@
     width: min(360px, calc(100% - 28px));
   }
 
+  /* Personnage rapproche du bord pour garder le decor visible. */
+  .scene-character {
+    right: clamp(0px, 4vw, 54px);
+    bottom: -7%;
+    width: min(54vw, 390px);
+  }
+
   /* Boite de dialogue en une colonne sur tablette. */
   .dialogue-box {
     grid-template-columns: 1fr;
+  }
+
+  /* Dialogue avec portrait adapte aux largeurs tablette. */
+  .dialogue-box.with-portrait .dialogue-main {
+    grid-template-columns: 88px minmax(0, 1fr);
+  }
+
+  /* Portrait plus compact sur tablette. */
+  .speaker-portrait {
+    width: 88px;
+    height: 88px;
+  }
+
+  /* Texte et choix gardent la hauteur du portrait sur tablette. */
+  .dialogue-content {
+    min-height: 88px;
   }
 
   /* En-tete du Codex empile en colonne. */
@@ -113,9 +136,40 @@
     font-size: clamp(1.75rem, 12vw, 3.4rem);
   }
 
+  /* Personnage reduit pour ne pas cacher les badges sur telephone. */
+  .scene-character {
+    right: -34px;
+    bottom: -3%;
+    width: min(62vw, 280px);
+    opacity: 0.96;
+  }
+
   /* Texte de dialogue plus dense en mobile. */
   .dialogue-box p {
     line-height: 1.55;
+  }
+
+  /* Dialogue avec portrait en deux colonnes compactes sur telephone. */
+  .dialogue-box.with-portrait .dialogue-main {
+    grid-template-columns: 72px minmax(0, 1fr);
+    column-gap: 12px;
+  }
+
+  /* Cadre portrait reduit sur telephone. */
+  .speaker-portrait {
+    width: 72px;
+    height: 72px;
+  }
+
+  /* Image portrait recentree sur le visage en mobile. */
+  .speaker-portrait img {
+    width: 138%;
+    height: 138%;
+  }
+
+  /* Texte et choix compresses a cote du portrait en mobile. */
+  .dialogue-content {
+    min-height: 72px;
   }
 
   /* Choix empiles verticalement sur telephone. */

@@ -1,7 +1,8 @@
 import { type CSSProperties, useMemo, useState } from "react";
-import { BookOpen, RotateCcw, ScrollText } from "lucide-react";
+import { BookOpen, RotateCcw, ScrollText, Volume2, VolumeX } from "lucide-react";
 import { CodexPanel } from "./components/CodexPanel";
 import { NovelStage } from "./components/NovelStage";
+import { useArchiveAmbience } from "./hooks/useArchiveAmbience";
 import { useInkStory } from "./hooks/useInkStory";
 import { loreEntries } from "./data/loreEntries";
 import { getScene } from "./data/scenes";
@@ -14,6 +15,7 @@ export default function App() {
   const story = useMemo(() => storyContent, []);
   const ink = useInkStory(story);
   const activeScene = getScene(viewMode === "novel" ? ink.currentLine?.scene : "archive");
+  const archiveAmbience = useArchiveAmbience(viewMode === "novel");
 
   return (
     <main
@@ -52,6 +54,15 @@ export default function App() {
           </button>
           <button type="button" onClick={ink.restart} title="Recommencer">
             <RotateCcw size={18} />
+          </button>
+          <button
+            className={archiveAmbience.isAudible ? "active" : ""}
+            type="button"
+            onClick={archiveAmbience.toggle}
+            title={archiveAmbience.isEnabled ? "Couper l'ambiance" : "Lancer l'ambiance des Archives"}
+          >
+            {archiveAmbience.isAudible ? <Volume2 size={18} /> : <VolumeX size={18} />}
+            <span>Ambiance</span>
           </button>
         </nav>
       </header>

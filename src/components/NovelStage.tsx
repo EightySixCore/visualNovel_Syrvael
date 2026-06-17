@@ -1,5 +1,5 @@
-import type { NovelChoice, NovelLine } from "../hooks/useInkStory";
 import type { CSSProperties } from "react";
+import type { NovelChoice, NovelLine } from "../hooks/useInkStory";
 import { useState } from "react";
 import { getScene } from "../data/scenes";
 
@@ -15,6 +15,9 @@ export function NovelStage({ choices, currentLine, history, onChoose, onContinue
   const canContinue = choices.length === 0 && currentLine !== null;
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const scene = getScene(currentLine?.scene);
+  const archiveScene = getScene("archive");
+  const speakerName = currentLine?.speaker ?? "Narration";
+  const speakerPortrait = speakerName === "Archiviste" ? archiveScene.portraitImage : scene.portraitImage;
 
   return (
     <section className="novel-layout" aria-label="Visual Novel">
@@ -32,6 +35,15 @@ export function NovelStage({ choices, currentLine, history, onChoose, onContinue
         <div className="frame-corner frame-corner-bl" />
         <div className="frame-corner frame-corner-br" />
         <div className="skyline" />
+        {scene.characterImage ? (
+          <img
+            className="scene-character"
+            src={scene.characterImage}
+            alt={scene.characterAlt ?? ""}
+            loading="eager"
+            decoding="sync"
+          />
+        ) : null}
         <div className="location-badge">{scene.eyebrow}</div>
         <button
           className="history-toggle"
@@ -62,27 +74,35 @@ export function NovelStage({ choices, currentLine, history, onChoose, onContinue
         </aside>
       </div>
 
-      <div className="dialogue-box">
+      <div className={`dialogue-box ${speakerPortrait ? "with-portrait" : ""}`}>
         <div className="dialogue-ornament" />
-        <div className="dialogue-content">
-          <div className="speaker-name">{currentLine?.speaker ?? "Narration"}</div>
-          <p>{currentLine?.text ?? "Le récit est terminé."}</p>
-        </div>
+        <div className="speaker-name">{speakerName}</div>
+        <div className="dialogue-main">
+          {speakerPortrait ? (
+            <div className="speaker-portrait" aria-hidden="true">
+              <img src={speakerPortrait} alt="" />
+            </div>
+          ) : null}
 
-        {choices.length > 0 ? (
-          <div className="choice-list">
-            {choices.map((choice, index) => (
-              <button key={choice.index} type="button" onClick={() => onChoose(choice.index)}>
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                {choice.text}
+          <div className="dialogue-content">
+            <p>{currentLine?.text ?? "Le recit est termine."}</p>
+
+            {choices.length > 0 ? (
+              <div className="choice-list">
+                {choices.map((choice, index) => (
+                  <button key={choice.index} type="button" onClick={() => onChoose(choice.index)}>
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    {choice.text}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <button className="continue-button" type="button" onClick={onContinue} disabled={!canContinue}>
+                Continuer
               </button>
-            ))}
+            )}
           </div>
-        ) : (
-          <button className="continue-button" type="button" onClick={onContinue} disabled={!canContinue}>
-            Continuer
-          </button>
-        )}
+        </div>
       </div>
     </section>
   );
