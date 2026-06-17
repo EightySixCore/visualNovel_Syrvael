@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.vite/
+
+*.log
+*.local
+
+.env
+.env.*
+!.env.example
+
+Thumbs.db
+Desktop.ini
