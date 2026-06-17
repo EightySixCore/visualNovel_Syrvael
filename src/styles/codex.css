@@ -1,0 +1,286 @@
+/* Codex : navigation, sommaire, document parchemin et lecteur Markdown. */
+
+/* Grille principale du Codex. */
+.codex-layout {
+  grid-template-columns: 320px minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(12px, 1.5vw, 18px);
+}
+
+/* Colonne laterale du Codex avec documents et sommaire. */
+.codex-sidebar {
+  position: sticky;
+  top: 18px;
+  display: grid;
+  gap: 14px;
+}
+
+/* Liste des documents disponibles dans le Codex. */
+.codex-tabs {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--app-accent, var(--gold)), transparent 54%);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 246, 220, 0.055), transparent 28%),
+    linear-gradient(180deg, rgba(17, 14, 23, 0.94), rgba(8, 7, 12, 0.98)),
+    rgba(18, 20, 18, 0.82);
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.32),
+    inset 0 0 0 2px rgba(0, 0, 0, 0.34);
+}
+
+/* Bouton d'un document du Codex. */
+.codex-tabs button {
+  display: grid;
+  justify-content: stretch;
+  min-height: 62px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 246, 220, 0.08);
+  background:
+    linear-gradient(90deg, rgba(255, 246, 220, 0.08), transparent 26%),
+    rgba(255, 255, 255, 0.045);
+  text-align: left;
+}
+
+/* Titre visible d'un document du Codex. */
+.codex-tabs span {
+  font-weight: 800;
+}
+
+/* Nom de fichier affiche sous le titre du document. */
+.codex-tabs small {
+  overflow: hidden;
+  color: rgba(244, 239, 230, 0.62);
+  font-size: 0.73rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Nom de fichier dans l'onglet actif. */
+.codex-tabs button.active small {
+  color: rgba(21, 16, 26, 0.68);
+}
+
+/* Sommaire cliquable du document courant. */
+.section-index {
+  max-height: 38vh;
+  overflow: auto;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--app-accent, var(--gold)), transparent 62%);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 246, 220, 0.055), transparent 36%),
+    rgba(9, 8, 13, 0.88);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.32);
+}
+
+/* Titre du sommaire du Codex. */
+.section-index p {
+  margin: 0 0 10px;
+  color: var(--app-accent, var(--gold));
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+/* Lien vers une section du document courant. */
+.section-index a {
+  display: block;
+  padding: 7px 8px;
+  border-left: 2px solid color-mix(in srgb, var(--app-accent, var(--gold)), transparent 54%);
+  color: rgba(244, 239, 230, 0.82);
+  font-size: 0.88rem;
+  line-height: 1.35;
+  text-decoration: none;
+}
+
+/* Survol d'un lien du sommaire. */
+.section-index a:hover {
+  color: #fff7dc;
+  background: rgba(240, 139, 181, 0.12);
+}
+
+/* Indentation des sous-sections de niveau 3. */
+.section-index .level-3 {
+  padding-left: 18px;
+  color: rgba(244, 239, 230, 0.72);
+}
+
+/* Indentation des sous-sections de niveau 4. */
+.section-index .level-4 {
+  padding-left: 30px;
+  color: rgba(244, 239, 230, 0.62);
+}
+
+/* Page parchemin qui contient le document selectionne. */
+.codex-document {
+  min-height: 560px;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--app-accent, var(--gold)), transparent 50%);
+  border-radius: 12px;
+  color: #302332;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.32), transparent 32%),
+    linear-gradient(180deg, rgba(250, 235, 199, 0.98), rgba(231, 210, 168, 0.97));
+  background-size: 44px 44px, auto;
+  box-shadow:
+    0 26px 70px rgba(0, 0, 0, 0.36),
+    inset 0 0 0 2px rgba(68, 43, 31, 0.18),
+    inset 0 0 0 5px rgba(255, 255, 255, 0.18);
+}
+
+/* En-tete du document du Codex. */
+.codex-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 24px 30px;
+  border-bottom: 2px solid rgba(73, 45, 55, 0.2);
+  color: #fff7dc;
+  background:
+    linear-gradient(135deg, rgba(255, 246, 220, 0.08), transparent 30%),
+    linear-gradient(135deg, #2b2033, #4b2839);
+}
+
+/* Titre du document dans le Codex. */
+.codex-document h2 {
+  margin-bottom: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2rem;
+}
+
+/* Nom du fichier source dans l'en-tete Codex. */
+.codex-hero .document-source {
+  color: var(--app-accent, var(--gold));
+}
+
+/* Groupe des statistiques du document. */
+.codex-stats {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Pastille de statistique du document. */
+.codex-stats span {
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 247, 220, 0.22);
+  border-radius: 999px;
+  color: #fff7dc;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+/* Resume court du document avant la lecture complete. */
+.codex-summary {
+  margin: 22px 28px 0;
+  padding: 16px 18px;
+  border-left: 4px solid color-mix(in srgb, var(--app-accent, var(--gold)), #7e2f56 34%);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 0 0 1px rgba(72, 48, 55, 0.08);
+}
+
+/* Texte du resume du document. */
+.codex-summary p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: #5a3e43;
+  line-height: 1.55;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+}
+
+/* Zone scrollable qui rend le Markdown. */
+.markdown-reader {
+  max-height: 58vh;
+  overflow: auto;
+  padding: 10px 28px 32px;
+}
+
+/* Titres rendus depuis le Markdown. */
+.markdown-reader h2,
+.markdown-reader h3,
+.markdown-reader h4 {
+  color: #2e2032;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+/* Titre principal rendu dans le lecteur Markdown. */
+.markdown-reader h2 {
+  margin: 22px 0 12px;
+  font-size: 1.7rem;
+}
+
+/* Section rendue dans le lecteur Markdown. */
+.markdown-reader h3 {
+  margin: 28px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(79, 54, 64, 0.22);
+  font-size: 1.35rem;
+}
+
+/* Sous-section rendue dans le lecteur Markdown. */
+.markdown-reader h4 {
+  margin: 22px 0 8px;
+  color: color-mix(in srgb, var(--app-accent, var(--gold)), #7e2f56 54%);
+  font-size: 1.02rem;
+}
+
+/* Texte courant et listes du lecteur Markdown. */
+.markdown-reader p,
+.reader-list {
+  color: #43323a;
+  font-size: 0.98rem;
+  line-height: 1.72;
+}
+
+/* Liste Markdown rendue dans le Codex. */
+.reader-list {
+  display: grid;
+  gap: 8px;
+  padding-left: 20px;
+}
+
+/* Puce coloree des listes du Codex. */
+.reader-list li::marker {
+  color: color-mix(in srgb, var(--app-accent, var(--gold)), #b43e71 36%);
+}
+
+/* Tableau Markdown rendu dans le Codex. */
+.reader-table {
+  width: 100%;
+  margin: 18px 0;
+  overflow: hidden;
+  border-collapse: collapse;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.44);
+  box-shadow: 0 12px 24px rgba(67, 50, 58, 0.08);
+}
+
+/* Cellules des tableaux du Codex. */
+.reader-table th,
+.reader-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(72, 48, 55, 0.18);
+  text-align: left;
+  vertical-align: top;
+}
+
+/* En-tete des tableaux du Codex. */
+.reader-table th {
+  color: #fff7dc;
+  background: linear-gradient(135deg, #2e2032, #553143);
+  font-size: 0.86rem;
+}
+
+/* Cellule de contenu des tableaux du Codex. */
+.reader-table td {
+  color: #43323a;
+}

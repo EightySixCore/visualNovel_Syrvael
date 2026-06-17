@@ -1,0 +1,131 @@
+/* Responsive : adaptations tablette et mobile. */
+
+/* Adaptations tablette et petits laptops. */
+@media (max-width: 880px) {
+  /* Fond et hauteur de page sur ecrans tactiles ou etroits. */
+  .app-shell {
+    min-height: auto;
+    background-attachment: scroll;
+  }
+
+  /* Barre superieure empilee en colonne. */
+  .topbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  /* Navigation principale repartie sur toute la largeur. */
+  .mode-switch {
+    justify-content: space-between;
+  }
+
+  /* Novel et Codex passent sur une seule colonne. */
+  .novel-layout,
+  .codex-layout {
+    grid-template-columns: 1fr;
+  }
+
+  /* Sidebar du Codex non sticky en mobile/tablette. */
+  .codex-sidebar {
+    position: static;
+  }
+
+  /* Scene VN plus compacte sur tablette. */
+  .novel-layout {
+    min-height: 0;
+    grid-template-rows: minmax(340px, 50vh) auto;
+  }
+
+  /* Hauteur minimale du cadre image sur tablette. */
+  .scene-frame {
+    min-height: 340px;
+  }
+
+  /* Tiroir Journal adapte a la largeur tablette. */
+  .history-panel {
+    top: 64px;
+    right: 14px;
+    bottom: 14px;
+    width: min(360px, calc(100% - 28px));
+  }
+
+  /* Boite de dialogue en une colonne sur tablette. */
+  .dialogue-box {
+    grid-template-columns: 1fr;
+  }
+
+  /* En-tete du Codex empile en colonne. */
+  .codex-hero {
+    flex-direction: column;
+  }
+
+  /* Lecture du Markdown sans hauteur forcee sur tablette. */
+  .markdown-reader {
+    max-height: none;
+  }
+}
+
+/* Adaptations telephone. */
+@media (max-width: 560px) {
+  /* Navigation scrollable quand les boutons manquent de place. */
+  .mode-switch {
+    overflow-x: auto;
+  }
+
+  /* Libelles caches pour garder uniquement les icones en mobile. */
+  .mode-switch button span {
+    display: none;
+  }
+
+  /* Scene et dialogue encore plus compacts sur telephone. */
+  .novel-layout {
+    gap: 10px;
+    grid-template-rows: minmax(300px, 46vh) auto;
+  }
+
+  /* Hauteur minimale de l'image sur telephone. */
+  .scene-frame {
+    min-height: 300px;
+  }
+
+  /* Badges flottants rapproches du bord sur telephone. */
+  .location-badge,
+  .history-toggle {
+    top: 14px;
+  }
+
+  /* Badge de lieu limite pour ne pas chevaucher le journal. */
+  .location-badge {
+    left: 14px;
+    max-width: calc(100% - 112px);
+  }
+
+  /* Bouton Journal compact sur telephone. */
+  .history-toggle {
+    right: 14px;
+    min-height: 38px;
+    padding: 0 12px;
+  }
+
+  /* Grand titre de scene ajuste aux petits ecrans. */
+  .scene-copy h2 {
+    max-width: 90%;
+    font-size: clamp(1.75rem, 12vw, 3.4rem);
+  }
+
+  /* Texte de dialogue plus dense en mobile. */
+  .dialogue-box p {
+    line-height: 1.55;
+  }
+
+  /* Choix empiles verticalement sur telephone. */
+  .choice-list {
+    display: grid;
+  }
+
+  /* Boutons de choix et Continuer en pleine largeur. */
+  .choice-list button,
+  .continue-button {
+    width: 100%;
+  }
+}

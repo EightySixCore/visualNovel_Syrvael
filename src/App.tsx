@@ -27,7 +27,7 @@ export default function App() {
       }
     >
       <header className="topbar">
-        <div>
+        <div className="brand-block">
           <p className="kicker">Syrvael</p>
           <h1>Chroniques d'un monde rouvert</h1>
         </div>
