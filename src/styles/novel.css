@@ -1,0 +1,399 @@
+/* Ecran Visual Novel : scene, journal ouvrable, dialogue et choix. */
+
+/* Grille principale de l'ecran Visual Novel. */
+.novel-layout {
+  flex: 1 1 auto;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(360px, 1fr) auto;
+  min-height: min(760px, calc(100vh - 112px));
+  gap: clamp(12px, 1.5vw, 18px);
+}
+
+/* Grand cadre image qui affiche le decor actuel. */
+.scene-frame {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--app-accent, var(--gold)), transparent 48%);
+  border-radius: 12px;
+  background-image:
+    var(--scene-overlay),
+    var(--scene-bg);
+  background-position: center;
+  background-size: cover;
+  box-shadow:
+    inset 0 0 0 2px rgba(0, 0, 0, 0.54),
+    inset 0 0 0 4px rgba(255, 246, 220, 0.08),
+    0 24px 70px rgba(0, 0, 0, 0.4);
+  animation: scene-drift 18s ease-in-out infinite alternate;
+}
+
+/* Couches decoratives communes posees par-dessus l'image de scene. */
+.scene-frame::before,
+.scene-frame::after {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  content: "";
+}
+
+/* Cadre interieur fin de l'image. */
+.scene-frame::before {
+  inset: 12px;
+  border: 1px solid rgba(255, 246, 220, 0.14);
+  border-radius: 8px;
+  box-shadow: inset 0 0 48px rgba(0, 0, 0, 0.28);
+}
+
+/* Vignettage et lumiere douce sur le decor. */
+.scene-frame::after {
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 55%, transparent 42%, rgba(0, 0, 0, 0.36)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 24%);
+}
+
+/* Base des coins ornementaux du cadre image. */
+.frame-corner {
+  position: absolute;
+  z-index: 4;
+  width: 44px;
+  height: 44px;
+  pointer-events: none;
+  border-color: color-mix(in srgb, var(--app-accent, var(--gold)), white 16%);
+  filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.7));
+}
+
+/* Coin ornemental haut gauche du cadre image. */
+.frame-corner-tl {
+  top: 14px;
+  left: 14px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+}
+
+/* Coin ornemental haut droit du cadre image. */
+.frame-corner-tr {
+  top: 14px;
+  right: 14px;
+  border-top: 2px solid;
+  border-right: 2px solid;
+}
+
+/* Coin ornemental bas gauche du cadre image. */
+.frame-corner-bl {
+  bottom: 14px;
+  left: 14px;
+  border-bottom: 2px solid;
+  border-left: 2px solid;
+}
+
+/* Coin ornemental bas droit du cadre image. */
+.frame-corner-br {
+  right: 14px;
+  bottom: 14px;
+  border-right: 2px solid;
+  border-bottom: 2px solid;
+}
+
+/* Fondu sombre en bas de l'image pour rendre le titre lisible. */
+.skyline {
+  position: absolute;
+  z-index: 1;
+  inset: auto 0 0;
+  height: 45%;
+  background: linear-gradient(transparent, rgba(6, 5, 9, 0.94));
+}
+
+/* Badges flottants places en haut de l'image. */
+.location-badge,
+.history-toggle {
+  position: absolute;
+  z-index: 6;
+  top: 20px;
+  min-height: 42px;
+  border: 1px solid color-mix(in srgb, var(--app-accent, var(--gold)), transparent 44%);
+  border-radius: 8px;
+  color: #fff7dc;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent),
+    rgba(11, 9, 15, 0.78);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.32),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  font-size: 0.8rem;
+  font-weight: 900;
+  backdrop-filter: blur(10px);
+}
+
+/* Badge indiquant le lieu actuellement affiche. */
+.location-badge {
+  left: 22px;
+  padding: 10px 16px;
+}
+
+/* Bouton qui ouvre ou ferme le journal de texte. */
+.history-toggle {
+  right: 22px;
+  padding: 0 18px;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+/* Etat actif ou survole du bouton Journal. */
+.history-toggle:hover,
+.history-toggle[aria-expanded="true"] {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--app-accent, var(--gold)), transparent 20%);
+  box-shadow:
+    0 0 24px color-mix(in srgb, var(--app-accent, var(--gold)), transparent 72%),
+    0 14px 34px rgba(0, 0, 0, 0.34);
+}
+
+/* Titre de lieu affiche sur l'image. */
+.scene-copy {
+  position: absolute;
+  z-index: 5;
+  left: clamp(18px, 3vw, 38px);
+  bottom: clamp(20px, 3vw, 34px);
+  max-width: 680px;
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.6);
+}
+
+/* Grand titre cinematographique du decor. */
+.scene-copy h2 {
+  color: var(--ivory);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 5vw, 5.4rem);
+  font-weight: 800;
+  line-height: 0.95;
+}
+
+/* Tiroir ouvrable contenant l'historique des dialogues. */
+.history-panel {
+  position: absolute;
+  z-index: 7;
+  top: 74px;
+  right: 20px;
+  bottom: 20px;
+  width: min(390px, calc(100% - 40px));
+  overflow: auto;
+  padding: 16px;
+  border: 1px solid rgba(255, 246, 220, 0.16);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 246, 220, 0.05), transparent 24%),
+    linear-gradient(180deg, rgba(18, 15, 25, 0.92), rgba(7, 7, 12, 0.96));
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.28),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.36);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(18px);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+/* Etat ouvert du tiroir Journal. */
+.history-panel.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+/* Titre sticky du tiroir Journal. */
+.panel-title {
+  position: sticky;
+  top: -16px;
+  z-index: 1;
+  margin: -16px -16px 14px;
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(255, 246, 220, 0.12);
+  color: var(--app-accent, var(--gold));
+  background: rgba(9, 8, 13, 0.92);
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* Carte d'une entree dans l'historique. */
+.history-panel article {
+  padding: 12px;
+  border-left: 2px solid color-mix(in srgb, var(--app-accent, var(--gold)), transparent 44%);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+/* Espacement entre deux entrees du journal. */
+.history-panel article + article {
+  margin-top: 12px;
+}
+
+/* Nom du narrateur ou personnage qui parle. */
+.history-panel span,
+.speaker-name {
+  color: var(--app-accent, var(--gold));
+  font-weight: 800;
+}
+
+/* Texte d'une entree dans l'historique. */
+.history-panel p {
+  margin: 5px 0 0;
+  color: rgba(244, 239, 230, 0.75);
+  line-height: 1.5;
+}
+
+/* Boite principale du dialogue courant. */
+.dialogue-box {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  column-gap: 20px;
+  min-height: clamp(150px, 19vh, 190px);
+  padding: clamp(20px, 2.4vw, 30px);
+  border: 1px solid color-mix(in srgb, var(--app-accent, var(--gold)), transparent 42%);
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, rgba(255, 246, 220, 0.08), transparent 30%),
+    linear-gradient(180deg, rgba(20, 16, 26, 0.97), rgba(7, 7, 12, 0.98));
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.38),
+    inset 0 0 0 2px rgba(0, 0, 0, 0.44),
+    inset 0 0 0 4px rgba(255, 246, 220, 0.055);
+}
+
+/* Liseres decoratifs haut et bas de la boite de dialogue. */
+.dialogue-box::before,
+.dialogue-box::after {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(90deg, transparent, var(--app-accent, var(--gold)), transparent);
+  opacity: 0.54;
+}
+
+/* Liseré superieur de la boite de dialogue. */
+.dialogue-box::before {
+  top: 10px;
+}
+
+/* Liseré inferieur de la boite de dialogue. */
+.dialogue-box::after {
+  bottom: 10px;
+}
+
+/* Ornement central au-dessus de la boite de dialogue. */
+.dialogue-ornament {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  width: min(180px, 42vw);
+  height: 20px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* Traits lateraux de l'ornement de dialogue. */
+.dialogue-ornament::before,
+.dialogue-ornament::after {
+  position: absolute;
+  top: 8px;
+  width: 42%;
+  height: 1px;
+  content: "";
+  background: var(--app-accent, var(--gold));
+  opacity: 0.62;
+}
+
+/* Trait gauche de l'ornement de dialogue. */
+.dialogue-ornament::before {
+  left: 0;
+}
+
+/* Trait droit de l'ornement de dialogue. */
+.dialogue-ornament::after {
+  right: 0;
+}
+
+/* Conteneur du nom et du texte courant. */
+.dialogue-content {
+  min-width: 0;
+}
+
+/* Texte principal de la ligne de dialogue. */
+.dialogue-box p {
+  margin: 10px 0 18px;
+  max-width: 1040px;
+  font-size: clamp(1rem, 1.4vw, 1.12rem);
+  line-height: 1.7;
+}
+
+/* Grille des choix proposes au joueur. */
+.choice-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-column: 1 / -1;
+  gap: 12px;
+}
+
+/* Style commun des choix et du bouton Continuer. */
+.choice-list button,
+.continue-button {
+  align-self: center;
+  min-height: 46px;
+  padding: 0 18px;
+  border: 1px solid color-mix(in srgb, var(--app-accent, var(--gold)), transparent 48%);
+  color: var(--ivory);
+  background:
+    linear-gradient(135deg, rgba(255, 246, 220, 0.12), transparent 32%),
+    linear-gradient(180deg, rgba(35, 29, 42, 0.95), rgba(11, 10, 15, 0.96));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.035),
+    0 10px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Bouton d'un choix narratif. */
+.choice-list button {
+  justify-content: flex-start;
+  gap: 12px;
+  text-align: left;
+}
+
+/* Pastille numerotee dans chaque choix. */
+.choice-list button span {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 34px;
+  height: 28px;
+  border: 1px solid color-mix(in srgb, var(--app-accent, var(--gold)), transparent 32%);
+  border-radius: 999px;
+  color: var(--app-accent, var(--gold));
+  background: rgba(0, 0, 0, 0.28);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+/* Etat desactive du bouton Continuer. */
+.continue-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+/* Animation lente qui donne de la vie au decor. */
+@keyframes scene-drift {
+  from {
+    background-position: center center;
+  }
+
+  to {
+    background-position: center 46%;
+  }
+}
