@@ -27,6 +27,13 @@
   animation: scene-drift 18s ease-in-out infinite alternate;
 }
 
+/* Flash doux quand le joueur change de lieu. */
+.scene-frame.changing {
+  animation:
+    scene-arrive 520ms ease,
+    scene-drift 18s ease-in-out infinite alternate;
+}
+
 /* Couches decoratives communes posees par-dessus l'image de scene. */
 .scene-frame::before,
 .scene-frame::after {
@@ -575,6 +582,19 @@
 
   to {
     background-position: center 46%;
+  }
+}
+
+/* Transition courte entre deux decors. */
+@keyframes scene-arrive {
+  from {
+    filter: brightness(0.72) saturate(0.82);
+    transform: scale(1.012);
+  }
+
+  to {
+    filter: brightness(1) saturate(1);
+    transform: scale(1);
   }
 }
 

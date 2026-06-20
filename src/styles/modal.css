@@ -1,0 +1,72 @@
+/* Modal d'information affichee au premier lancement du prototype. */
+
+/* Voile plein ecran qui isole le message du jeu. */
+.development-modal-backdrop {
+  position: fixed;
+  z-index: 40;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(240, 196, 109, 0.16), transparent 34%),
+    rgba(5, 4, 8, 0.76);
+  backdrop-filter: blur(10px);
+}
+
+/* Fenetre principale de la modal. */
+.development-modal {
+  width: min(620px, 100%);
+  padding: clamp(24px, 4vw, 38px);
+  border: 1px solid color-mix(in srgb, var(--app-accent, var(--gold)), transparent 36%);
+  border-radius: 14px;
+  color: var(--ivory);
+  background:
+    radial-gradient(circle at 10% 0%, color-mix(in srgb, var(--app-accent, var(--gold)), transparent 78%), transparent 34%),
+    linear-gradient(180deg, rgba(22, 17, 27, 0.98), rgba(8, 7, 12, 0.98));
+  box-shadow:
+    0 28px 80px rgba(0, 0, 0, 0.54),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Petit libelle au-dessus du titre. */
+.development-modal-kicker {
+  margin: 0 0 8px;
+  color: var(--app-accent, var(--gold));
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+/* Titre de la modal. */
+.development-modal h2 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 0.96;
+}
+
+/* Liste des avertissements projet. */
+.development-modal ul {
+  display: grid;
+  gap: 10px;
+  margin: 22px 0 26px;
+  padding-left: 20px;
+  color: rgba(244, 239, 230, 0.82);
+  line-height: 1.6;
+}
+
+/* Bouton de fermeture de la modal. */
+.development-modal button {
+  min-height: 46px;
+  padding: 0 20px;
+  border: 1px solid color-mix(in srgb, var(--app-accent, var(--gold)), transparent 28%);
+  border-radius: 8px;
+  color: #17100b;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--app-accent, var(--gold)), white 18%), #f4d88f);
+  box-shadow:
+    0 0 24px color-mix(in srgb, var(--app-accent, var(--gold)), transparent 70%),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.36);
+  font-weight: 900;
+}
