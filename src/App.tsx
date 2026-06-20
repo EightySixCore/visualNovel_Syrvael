@@ -1,12 +1,14 @@
 import { type CSSProperties, useMemo, useState } from "react";
 import { BookOpen, RotateCcw, ScrollText, Volume2, VolumeX } from "lucide-react";
 import { CodexPanel } from "./components/CodexPanel";
+import { DevelopmentNoticeModal } from "./components/DevelopmentNoticeModal";
 import { NovelStage } from "./components/NovelStage";
+import { buildChapterOneProgress } from "./data/chapterOneProgress";
 import { useArchiveAmbience } from "./hooks/useArchiveAmbience";
 import { useInkStory } from "./hooks/useInkStory";
 import { loreEntries } from "./data/loreEntries";
 import { getScene } from "./data/scenes";
-import { storyContent } from "./story/prologue";
+import { storyContent } from "./story";
 
 type ViewMode = "novel" | "codex";
 
@@ -16,6 +18,7 @@ export default function App() {
   const ink = useInkStory(story);
   const activeScene = getScene(viewMode === "novel" ? ink.currentLine?.scene : "archive");
   const archiveAmbience = useArchiveAmbience(viewMode === "novel");
+  const chapterOneProgress = buildChapterOneProgress(ink.variables, ink.history, ink.currentLine?.scene);
 
   return (
     <main
@@ -70,6 +73,7 @@ export default function App() {
       {viewMode === "novel" ? (
         <NovelStage
           choices={ink.choices}
+          chapterOneProgress={chapterOneProgress}
           currentLine={ink.currentLine}
           history={ink.history}
           onChoose={ink.choose}
@@ -78,6 +82,7 @@ export default function App() {
       ) : (
         <CodexPanel entries={loreEntries} />
       )}
+      <DevelopmentNoticeModal />
     </main>
   );
 }

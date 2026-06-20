@@ -14,6 +14,10 @@ export type NovelChoice = {
   text: string;
 };
 
+export type StoryVariableValue = boolean | number | string | null;
+
+export type StoryVariables = Record<string, StoryVariableValue>;
+
 type StoredStoryState = {
   history: NovelLine[];
   lineId: number;
@@ -22,6 +26,20 @@ type StoredStoryState = {
 };
 
 const SAVE_KEY = "syrvael-story-save";
+
+const trackedVariables = [
+  "trust",
+  "chapter_1_started",
+  "has_ruban",
+  "has_sermon",
+  "has_cierges",
+  "has_sceau",
+  "has_liste",
+  "has_billet",
+  "has_clef",
+  "has_registre",
+  "has_fragment",
+] as const;
 
 function createStory(source: string) {
   return new Compiler(source).Compile();
@@ -62,6 +80,15 @@ function writeStoredState(source: string, story: Story, lineId: number, history:
   };
 
   window.localStorage.setItem(SAVE_KEY, JSON.stringify(saveState));
+}
+
+function readVariables(story: Story): StoryVariables {
+  return Object.fromEntries(
+    trackedVariables.map((variableName) => {
+      const value = story.variablesState.$(variableName);
+      return [variableName, typeof value === "boolean" || typeof value === "number" || typeof value === "string" ? value : null];
+    }),
+  );
 }
 
 function readSpeaker(tags: string[]) {
@@ -105,6 +132,7 @@ export function useInkStory(source: string) {
         history: storedState.history,
         lineId: storedState.lineId,
         story: nextStory,
+        variables: readVariables(nextStory),
       };
     }
 
@@ -113,11 +141,13 @@ export function useInkStory(source: string) {
       history: firstLine ? [firstLine] : [],
       lineId: 1,
       story: nextStory,
+      variables: readVariables(nextStory),
     };
   }, [source]);
   const [story, setStory] = useState(initialState.story);
   const [lineId, setLineId] = useState(initialState.lineId);
   const [history, setHistory] = useState<NovelLine[]>(initialState.history);
+  const [variables, setVariables] = useState<StoryVariables>(initialState.variables);
 
   const currentLine = history.at(-1) ?? null;
   const choices: NovelChoice[] = story.currentChoices.map((choice, index) => ({
@@ -132,6 +162,7 @@ export function useInkStory(source: string) {
 
       if (nextLine) {
         setLineId(nextId);
+        setVariables(readVariables(nextStory));
         setHistory((previous) => {
           const nextHistory = [...previous, nextLine];
           writeStoredState(source, nextStory, nextId, nextHistory);
@@ -163,12 +194,14 @@ export function useInkStory(source: string) {
     setStory(nextStory);
     setLineId(1);
     setHistory(firstLine ? [firstLine] : []);
+    setVariables(readVariables(nextStory));
   }, [source]);
 
   return {
     choices,
     currentLine,
     history,
+    variables,
     choose,
     continueStory,
     restart,

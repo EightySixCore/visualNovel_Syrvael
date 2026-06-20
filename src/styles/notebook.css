@@ -1,0 +1,474 @@
+/* Carnet d'Archiviste : mini-map, inventaire, indices et hypotheses. */
+
+/* Bouton flottant qui ouvre le carnet dans la scene. */
+.notebook-toggle {
+  position: absolute;
+  z-index: 8;
+  top: 20px;
+  right: 128px;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid color-mix(in srgb, var(--app-accent, var(--gold)), transparent 44%);
+  border-radius: 8px;
+  color: #fff7dc;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent),
+    rgba(11, 9, 15, 0.78);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.32),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  font-size: 0.8rem;
+  font-weight: 900;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+/* Etat actif ou survole du bouton Carnet. */
+.notebook-toggle:hover,
+.notebook-toggle[aria-expanded="true"] {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--app-accent, var(--gold)), transparent 20%);
+  box-shadow:
+    0 0 24px color-mix(in srgb, var(--app-accent, var(--gold)), transparent 72%),
+    0 14px 34px rgba(0, 0, 0, 0.34);
+}
+
+/* Tiroir du carnet, pose sur la gauche du decor. */
+.notebook-panel {
+  position: absolute;
+  z-index: 9;
+  top: 74px;
+  bottom: clamp(220px, 29vh, 300px);
+  left: 20px;
+  width: min(720px, calc(100% - 40px));
+  overflow: auto;
+  padding: 0;
+  border: 1px solid rgba(255, 246, 220, 0.16);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 0% 0%, color-mix(in srgb, var(--app-accent, var(--gold)), transparent 82%), transparent 40%),
+    linear-gradient(180deg, rgba(20, 16, 26, 0.94), rgba(7, 7, 12, 0.97));
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.32),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.36);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-18px);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+  backdrop-filter: blur(14px);
+}
+
+/* Etat ouvert du tiroir Carnet. */
+.notebook-panel.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+/* Contenu interne du carnet. */
+.archive-notebook {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+/* En-tete du carnet avec statut du chapitre. */
+.notebook-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 246, 220, 0.12);
+}
+
+/* Petit libelle du carnet. */
+.notebook-header p {
+  margin: 0;
+  color: var(--app-accent, var(--gold));
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+/* Titre du carnet. */
+.notebook-header h3 {
+  margin: 4px 0 0;
+  color: var(--ivory);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
+}
+
+/* Badge du statut d'enquete. */
+.notebook-header > span {
+  flex: 0 0 auto;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, var(--app-accent, var(--gold)), transparent 40%);
+  border-radius: 999px;
+  color: var(--ivory);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+/* Objectif courant du chapitre. */
+.notebook-objective {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid color-mix(in srgb, var(--app-accent, var(--gold)), transparent 58%);
+  border-radius: 9px;
+  color: var(--ivory);
+  background: rgba(255, 246, 220, 0.06);
+}
+
+/* Texte de l'objectif. */
+.notebook-objective p {
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* Grille des sections du carnet. */
+.notebook-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+/* Section visuelle du carnet. */
+.notebook-section {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(255, 246, 220, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+/* Section carte occupe deux lignes. */
+.notebook-map {
+  grid-column: 1 / -1;
+}
+
+/* Titre de section du carnet. */
+.notebook-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: var(--app-accent, var(--gold));
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+/* Compteur de progression dans les sections. */
+.notebook-count {
+  margin-left: auto;
+  color: rgba(244, 239, 230, 0.72);
+  font-size: 0.74rem;
+}
+
+/* Carte stylisee de Havrenoire. */
+.city-map {
+  position: relative;
+  min-height: 330px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 246, 220, 0.1);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--app-accent, var(--gold)), transparent 78%), transparent 28%),
+    radial-gradient(circle at 18% 18%, rgba(255, 246, 220, 0.08), transparent 20%),
+    linear-gradient(rgba(255, 246, 220, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 246, 220, 0.03) 1px, transparent 1px),
+    rgba(0, 0, 0, 0.26);
+  background-size:
+    auto,
+    auto,
+    36px 36px,
+    36px 36px,
+    auto;
+}
+
+/* Routes dessinees sur le plan de Havrenoire. */
+.map-road {
+  position: absolute;
+  z-index: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--app-accent, var(--gold)), transparent 70%);
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.28);
+  opacity: 0.58;
+}
+
+/* Route centrale ouest-est du parvis. */
+.map-road-main {
+  top: 42%;
+  left: 18%;
+  width: 64%;
+  height: 3px;
+}
+
+/* Route vers la cathedrale et le cloitre. */
+.map-road-north {
+  top: 16%;
+  left: 50%;
+  width: 3px;
+  height: 53%;
+}
+
+/* Route noble vers l'ouest. */
+.map-road-west {
+  top: 42%;
+  left: 18%;
+  width: 3px;
+  height: 27%;
+}
+
+/* Route du palais vers la porte. */
+.map-road-east {
+  top: 42%;
+  left: 82%;
+  width: 3px;
+  height: 28%;
+}
+
+/* Route basse vers les archives. */
+.map-road-south {
+  top: 68%;
+  left: 34%;
+  width: 32%;
+  height: 3px;
+}
+
+/* Noeud de lieu sur la mini-map. */
+.map-node {
+  position: relative;
+  position: absolute;
+  z-index: 1;
+  left: var(--map-x);
+  top: var(--map-y);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: clamp(88px, 12vw, 128px);
+  min-height: 54px;
+  transform: translate(-50%, -50%);
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 246, 220, 0.14);
+  border-radius: 9px;
+  color: rgba(244, 239, 230, 0.58);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent),
+    rgba(12, 10, 16, 0.88);
+  text-align: center;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.22);
+}
+
+/* Nom court du lieu sur la mini-map. */
+.map-node strong {
+  color: inherit;
+  font-size: clamp(0.7rem, 1vw, 0.82rem);
+  line-height: 1.1;
+}
+
+/* Statut du lieu sur la mini-map. */
+.map-node span {
+  margin-top: 3px;
+  color: rgba(244, 239, 230, 0.58);
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* Lieu verrouille sur la mini-map. */
+.map-node.locked {
+  border-style: dashed;
+  opacity: 0.62;
+}
+
+/* Lieu accessible sur la mini-map. */
+.map-node.accessible {
+  color: var(--ivory);
+  border-color: color-mix(in srgb, var(--app-accent, var(--gold)), transparent 52%);
+}
+
+/* Lieu deja visite sur la mini-map. */
+.map-node.visited {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--app-accent, var(--gold)), transparent 82%), transparent),
+    rgba(17, 13, 18, 0.94);
+  box-shadow:
+    0 0 24px color-mix(in srgb, var(--app-accent, var(--gold)), transparent 74%),
+    0 12px 24px rgba(0, 0, 0, 0.26),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+/* Lieu ou se trouve actuellement le joueur. */
+.map-node.current {
+  z-index: 2;
+  border-color: color-mix(in srgb, var(--app-accent, var(--gold)), white 8%);
+  color: #17100b;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--app-accent, var(--gold)), white 18%), #f4d88f);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--app-accent, var(--gold)), transparent 74%),
+    0 0 30px color-mix(in srgb, var(--app-accent, var(--gold)), transparent 36%),
+    0 18px 32px rgba(0, 0, 0, 0.38);
+}
+
+/* Libelle du statut courant sur la mini-map. */
+.map-node.current span {
+  color: rgba(23, 16, 11, 0.72);
+}
+
+/* Etiquette ICI au-dessus du lieu courant. */
+.map-node.current::before {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  padding: 3px 7px;
+  border: 1px solid rgba(244, 216, 143, 0.6);
+  border-radius: 999px;
+  color: var(--ivory);
+  content: "ICI";
+  background: rgba(8, 7, 12, 0.86);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--app-accent, var(--gold)), transparent 58%);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  transform: translateX(-50%);
+}
+
+/* Petit pointeur sous l'etiquette ICI. */
+.map-node.current::after {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  content: "";
+  background: var(--app-accent, var(--gold));
+  box-shadow: 0 0 12px var(--app-accent, var(--gold));
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* Lieu contenant encore un objet potentiel. */
+.map-node.pending::after {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  content: "";
+  background: var(--app-accent, var(--gold));
+  box-shadow: 0 0 12px var(--app-accent, var(--gold));
+}
+
+/* Decale le marqueur d'objet quand le lieu est aussi la position actuelle. */
+.map-node.current.pending::after {
+  top: 6px;
+  right: 7px;
+  left: auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  transform: none;
+}
+
+/* Legende du plan. */
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-top: 10px;
+  color: rgba(244, 239, 230, 0.68);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+/* Entree de legende du plan. */
+.map-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Pastille de legende. */
+.legend-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: rgba(244, 239, 230, 0.34);
+}
+
+/* Pastille visitee. */
+.legend-dot.current {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--app-accent, var(--gold)), white 18%), #f4d88f);
+  box-shadow: 0 0 12px var(--app-accent, var(--gold));
+}
+
+/* Pastille visitee. */
+.legend-dot.visited {
+  background: var(--app-accent, var(--gold));
+  box-shadow: 0 0 10px var(--app-accent, var(--gold));
+}
+
+/* Pastille objet restant. */
+.legend-dot.pending {
+  border: 1px solid var(--app-accent, var(--gold));
+  background: transparent;
+}
+
+/* Pastille verrouillee. */
+.legend-dot.locked {
+  border: 1px dashed rgba(244, 239, 230, 0.5);
+  background: transparent;
+}
+
+/* Liste d'objets, indices ou hypotheses. */
+.notebook-list {
+  display: grid;
+  gap: 8px;
+}
+
+/* Ligne de progression du carnet. */
+.notebook-list article {
+  padding: 9px 10px;
+  border-left: 2px solid rgba(255, 246, 220, 0.16);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.18);
+  opacity: 0.66;
+}
+
+/* Ligne revelee dans le carnet. */
+.notebook-list article.known {
+  border-left-color: var(--app-accent, var(--gold));
+  opacity: 1;
+}
+
+/* Nom d'un element du carnet. */
+.notebook-list strong {
+  display: block;
+  color: var(--ivory);
+  font-size: 0.84rem;
+}
+
+/* Description d'un element du carnet. */
+.notebook-list span {
+  display: block;
+  margin-top: 3px;
+  color: rgba(244, 239, 230, 0.7);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
