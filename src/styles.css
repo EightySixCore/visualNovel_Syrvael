@@ -9,6 +9,12 @@
 /* Importe l'interface de Visual Novel. */
 @import "./styles/novel.css";
 
+/* Importe le carnet d'enquete et la mini-map. */
+@import "./styles/notebook.css";
+
+/* Importe la modal d'avertissement du prototype. */
+@import "./styles/modal.css";
+
 /* Importe l'interface du Codex. */
 @import "./styles/codex.css";
 

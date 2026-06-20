@@ -1,6 +1,10 @@
 import archiveScene from "../assets/syrvael-archive-bg.png";
 import archivistCharacter from "../assets/characters/archivist.png";
 import archivistPortrait from "../assets/characters/archivist-portrait.png";
+import cathedralScene from "../assets/scenes/scene-cathedral.png";
+import grandMarketScene from "../assets/scenes/scene-grand-market.png";
+import nobleDistrictScene from "../assets/scenes/scene-noble-district.png";
+import royalPalaceScene from "../assets/scenes/scene-royal-palace.png";
 import havrenoireScene from "../assets/scene-havrenoire.png";
 import hrimgardScene from "../assets/scene-hrimgard.png";
 import norathalScene from "../assets/scene-norathal.png";
@@ -59,7 +63,7 @@ export const scenes: Record<SceneId, SceneDefinition> = {
     appOverlay:
       "radial-gradient(circle at 18% 0%, rgba(231, 176, 83, 0.22), transparent 34%), linear-gradient(90deg, rgba(20, 15, 13, 0.92), rgba(68, 42, 27, 0.42) 48%, rgba(18, 14, 16, 0.88))",
     eyebrow: "Palais royal",
-    image: havrenoireScene,
+    image: royalPalaceScene,
     sceneOverlay: "linear-gradient(rgba(40, 24, 18, 0.18), rgba(18, 11, 15, 0.7))",
     title: "Les portes fermees",
   },
@@ -68,7 +72,7 @@ export const scenes: Record<SceneId, SceneDefinition> = {
     appOverlay:
       "radial-gradient(circle at 18% 0%, rgba(235, 211, 141, 0.22), transparent 34%), linear-gradient(90deg, rgba(18, 13, 17, 0.94), rgba(73, 52, 35, 0.42) 48%, rgba(16, 12, 15, 0.9))",
     eyebrow: "Cathedrale de Syrva",
-    image: havrenoireScene,
+    image: cathedralScene,
     sceneOverlay: "linear-gradient(rgba(96, 74, 42, 0.1), rgba(17, 10, 14, 0.68))",
     title: "Les cloches etaient pretes",
   },
@@ -86,7 +90,7 @@ export const scenes: Record<SceneId, SceneDefinition> = {
     appOverlay:
       "radial-gradient(circle at 18% 0%, rgba(224, 173, 120, 0.22), transparent 34%), linear-gradient(90deg, rgba(24, 14, 16, 0.92), rgba(82, 45, 43, 0.42) 48%, rgba(18, 13, 16, 0.88))",
     eyebrow: "Quartier noble",
-    image: havrenoireScene,
+    image: nobleDistrictScene,
     sceneOverlay: "linear-gradient(rgba(96, 45, 35, 0.12), rgba(20, 12, 15, 0.62))",
     title: "Les carrosses sans armoiries",
   },
@@ -104,7 +108,7 @@ export const scenes: Record<SceneId, SceneDefinition> = {
     appOverlay:
       "radial-gradient(circle at 18% 0%, rgba(240, 196, 109, 0.2), transparent 34%), linear-gradient(90deg, rgba(24, 17, 12, 0.92), rgba(74, 45, 22, 0.38) 48%, rgba(16, 12, 12, 0.88))",
     eyebrow: "Grand marche",
-    image: havrenoireScene,
+    image: grandMarketScene,
     sceneOverlay: "linear-gradient(rgba(79, 47, 21, 0.1), rgba(20, 12, 10, 0.6))",
     title: "Les cierges noirs",
   },

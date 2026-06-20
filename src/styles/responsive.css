@@ -65,6 +65,31 @@
     width: min(360px, calc(100% - 28px));
   }
 
+  /* Bouton Carnet rapproche du bouton Journal sur tablette. */
+  .notebook-toggle {
+    top: 20px;
+    right: 122px;
+  }
+
+  /* Carnet adapte a la place au-dessus du dialogue sur tablette. */
+  .notebook-panel {
+    top: 64px;
+    right: 14px;
+    bottom: clamp(224px, 35vh, 292px);
+    left: 14px;
+    width: auto;
+  }
+
+  /* Sections du carnet en une colonne quand la largeur diminue. */
+  .notebook-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* La carte reprend une hauteur normale en colonne. */
+  .notebook-map {
+    grid-row: auto;
+  }
+
   /* Personnage rapproche du bord pour garder le decor visible. */
   .scene-character {
     right: clamp(0px, 4vw, 48px);
@@ -181,6 +206,49 @@
     right: 14px;
     min-height: 38px;
     padding: 0 12px;
+  }
+
+  /* Bouton Carnet compact sur telephone. */
+  .notebook-toggle {
+    top: 58px;
+    right: 14px;
+    min-height: 34px;
+    padding: 0 12px;
+  }
+
+  /* Carnet limite pour laisser le dialogue respirer sur telephone. */
+  .notebook-panel {
+    top: 98px;
+    right: 10px;
+    bottom: 58%;
+    left: 10px;
+  }
+
+  /* En-tete du carnet empile sur telephone. */
+  .notebook-header {
+    flex-direction: column;
+  }
+
+  /* Carte plus compacte sur telephone. */
+  .city-map {
+    min-height: 280px;
+  }
+
+  /* Libelles de lieux reduits sur telephone. */
+  .map-node {
+    width: 78px;
+    min-height: 46px;
+    padding: 6px;
+  }
+
+  /* Nom court de lieu compacte sur telephone. */
+  .map-node strong {
+    font-size: 0.62rem;
+  }
+
+  /* Statut de lieu compacte sur telephone. */
+  .map-node span {
+    font-size: 0.52rem;
   }
 
   /* Grand titre de scene ajuste aux petits ecrans. */

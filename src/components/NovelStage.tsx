@@ -1,10 +1,13 @@
 import type { CSSProperties } from "react";
+import type { ChapterOneProgress } from "../data/chapterOneProgress";
 import type { NovelChoice, NovelLine } from "../hooks/useInkStory";
 import { useEffect, useState } from "react";
+import { ArchiveNotebook } from "./ArchiveNotebook";
 import { getScene } from "../data/scenes";
 import { getSpeakerPortrait, getSpeakerSprite } from "../data/speakers";
 
 type NovelStageProps = {
+  chapterOneProgress: ChapterOneProgress;
   choices: NovelChoice[];
   currentLine: NovelLine | null;
   history: NovelLine[];
@@ -12,8 +15,10 @@ type NovelStageProps = {
   onContinue: () => void;
 };
 
-export function NovelStage({ choices, currentLine, history, onChoose, onContinue }: NovelStageProps) {
+export function NovelStage({ chapterOneProgress, choices, currentLine, history, onChoose, onContinue }: NovelStageProps) {
   const canContinue = choices.length === 0 && currentLine !== null;
+  const [isSceneChanging, setIsSceneChanging] = useState(false);
+  const [isNotebookOpen, setIsNotebookOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isSceneTitleVisible, setIsSceneTitleVisible] = useState(true);
   const scene = getScene(currentLine?.scene);
@@ -24,16 +29,21 @@ export function NovelStage({ choices, currentLine, history, onChoose, onContinue
   const isNpcSprite = Boolean(dedicatedSpeakerSprite && speakerName !== "Archiviste");
 
   useEffect(() => {
+    setIsSceneChanging(true);
     setIsSceneTitleVisible(true);
+    const transitionTimer = window.setTimeout(() => setIsSceneChanging(false), 520);
     const timer = window.setTimeout(() => setIsSceneTitleVisible(false), 7500);
 
-    return () => window.clearTimeout(timer);
+    return () => {
+      window.clearTimeout(timer);
+      window.clearTimeout(transitionTimer);
+    };
   }, [scene.title]);
 
   return (
     <section className="novel-layout" aria-label="Visual Novel">
       <div
-        className="scene-frame"
+        className={`scene-frame ${isSceneChanging ? "changing" : ""}`}
         style={
           {
             "--scene-bg": `url(${scene.image})`,
@@ -56,6 +66,15 @@ export function NovelStage({ choices, currentLine, history, onChoose, onContinue
           />
         ) : null}
         <div className="location-badge">{scene.eyebrow}</div>
+        <button
+          className="notebook-toggle"
+          type="button"
+          aria-expanded={isNotebookOpen}
+          aria-controls="archive-notebook"
+          onClick={() => setIsNotebookOpen((open) => !open)}
+        >
+          Carnet
+        </button>
         <button
           className="history-toggle"
           type="button"
@@ -80,8 +99,16 @@ export function NovelStage({ choices, currentLine, history, onChoose, onContinue
             <article key={line.id}>
               <span>{line.speaker}</span>
               <p>{line.text}</p>
-            </article>
+          </article>
           ))}
+        </aside>
+
+        <aside
+          className={`notebook-panel ${isNotebookOpen ? "open" : ""}`}
+          id="archive-notebook"
+          aria-label="Carnet d'Archiviste"
+        >
+          <ArchiveNotebook progress={chapterOneProgress} />
         </aside>
 
         <div className={`dialogue-box ${speakerPortrait ? "with-portrait" : ""}`}>
