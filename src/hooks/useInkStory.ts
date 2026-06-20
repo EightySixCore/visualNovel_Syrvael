@@ -14,8 +14,54 @@ export type NovelChoice = {
   text: string;
 };
 
+type StoredStoryState = {
+  history: NovelLine[];
+  lineId: number;
+  sourceKey: string;
+  storyState: string;
+};
+
+const SAVE_KEY = "syrvael-story-save";
+
 function createStory(source: string) {
   return new Compiler(source).Compile();
+}
+
+function createSourceKey(source: string) {
+  return `${source.length}:${source.slice(0, 80)}`;
+}
+
+function readStoredState(source: string): StoredStoryState | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const rawSave = window.localStorage.getItem(SAVE_KEY);
+  if (!rawSave) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(rawSave) as StoredStoryState;
+    return parsed.sourceKey === createSourceKey(source) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredState(source: string, story: Story, lineId: number, history: NovelLine[]) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const saveState: StoredStoryState = {
+    history,
+    lineId,
+    sourceKey: createSourceKey(source),
+    storyState: story.state.ToJson(),
+  };
+
+  window.localStorage.setItem(SAVE_KEY, JSON.stringify(saveState));
 }
 
 function readSpeaker(tags: string[]) {
@@ -49,13 +95,29 @@ function pullNextLine(story: Story, id: number): NovelLine | null {
 }
 
 export function useInkStory(source: string) {
-  const initialStory = useMemo(() => createStory(source), [source]);
-  const [story, setStory] = useState(initialStory);
-  const [lineId, setLineId] = useState(1);
-  const [history, setHistory] = useState<NovelLine[]>(() => {
-    const firstLine = pullNextLine(initialStory, 1);
-    return firstLine ? [firstLine] : [];
-  });
+  const initialState = useMemo(() => {
+    const nextStory = createStory(source);
+    const storedState = readStoredState(source);
+
+    if (storedState) {
+      nextStory.state.LoadJson(storedState.storyState);
+      return {
+        history: storedState.history,
+        lineId: storedState.lineId,
+        story: nextStory,
+      };
+    }
+
+    const firstLine = pullNextLine(nextStory, 1);
+    return {
+      history: firstLine ? [firstLine] : [],
+      lineId: 1,
+      story: nextStory,
+    };
+  }, [source]);
+  const [story, setStory] = useState(initialState.story);
+  const [lineId, setLineId] = useState(initialState.lineId);
+  const [history, setHistory] = useState<NovelLine[]>(initialState.history);
 
   const currentLine = history.at(-1) ?? null;
   const choices: NovelChoice[] = story.currentChoices.map((choice, index) => ({
@@ -70,10 +132,14 @@ export function useInkStory(source: string) {
 
       if (nextLine) {
         setLineId(nextId);
-        setHistory((previous) => [...previous, nextLine]);
+        setHistory((previous) => {
+          const nextHistory = [...previous, nextLine];
+          writeStoredState(source, nextStory, nextId, nextHistory);
+          return nextHistory;
+        });
       }
     },
-    [lineId],
+    [lineId, source],
   );
 
   const continueStory = useCallback(() => {
@@ -91,6 +157,9 @@ export function useInkStory(source: string) {
   const restart = useCallback(() => {
     const nextStory = createStory(source);
     const firstLine = pullNextLine(nextStory, 1);
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem(SAVE_KEY);
+    }
     setStory(nextStory);
     setLineId(1);
     setHistory(firstLine ? [firstLine] : []);
