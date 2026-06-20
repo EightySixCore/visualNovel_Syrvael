@@ -25,20 +25,36 @@
     grid-template-columns: 1fr;
   }
 
+  /* Codex resserre ses marges quand il passe en colonne. */
+  .codex-layout {
+    max-width: 100%;
+    gap: 14px;
+  }
+
   /* Sidebar du Codex non sticky en mobile/tablette. */
   .codex-sidebar {
     position: static;
   }
 
+  /* Documents du Codex en grille compacte sur tablette. */
+  .codex-tabs {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  /* Sommaire moins haut quand il est au-dessus du document. */
+  .section-index {
+    max-height: 220px;
+  }
+
   /* Scene VN plus compacte sur tablette. */
   .novel-layout {
     min-height: 0;
-    grid-template-rows: minmax(340px, 50vh) auto;
+    grid-template-rows: minmax(540px, calc(100vh - 132px));
   }
 
   /* Hauteur minimale du cadre image sur tablette. */
   .scene-frame {
-    min-height: 340px;
+    min-height: 540px;
   }
 
   /* Tiroir Journal adapte a la largeur tablette. */
@@ -49,9 +65,50 @@
     width: min(360px, calc(100% - 28px));
   }
 
+  /* Personnage rapproche du bord pour garder le decor visible. */
+  .scene-character {
+    right: clamp(0px, 4vw, 48px);
+    bottom: clamp(178px, 31vh, 250px);
+    width: min(45vw, 320px);
+    max-height: min(56%, 390px);
+  }
+
+  /* Sprites PNJ agrandis mais gardes dans le cadre sur tablette. */
+  .scene-character-npc {
+    right: clamp(-8px, 3vw, 28px);
+    bottom: clamp(172px, 30vh, 238px);
+    width: min(48vw, 340px);
+    max-height: min(54%, 380px);
+  }
+
   /* Boite de dialogue en une colonne sur tablette. */
   .dialogue-box {
-    grid-template-columns: 1fr;
+    right: 14px;
+    bottom: 14px;
+    left: 14px;
+    max-height: min(50%, 360px);
+    padding: 18px;
+  }
+
+  /* Titre de scene remonte au-dessus de la boite de dialogue sur tablette. */
+  .scene-copy {
+    bottom: clamp(230px, 44vh, 300px);
+  }
+
+  /* Dialogue avec portrait adapte aux largeurs tablette. */
+  .dialogue-box.with-portrait .dialogue-main {
+    grid-template-columns: 88px minmax(0, 1fr);
+  }
+
+  /* Portrait plus compact sur tablette. */
+  .speaker-portrait {
+    width: 88px;
+    height: 88px;
+  }
+
+  /* Texte et choix gardent la hauteur du portrait sur tablette. */
+  .dialogue-content {
+    min-height: 88px;
   }
 
   /* En-tete du Codex empile en colonne. */
@@ -77,15 +134,34 @@
     display: none;
   }
 
+  /* Onglets du Codex empiles sur telephone. */
+  .codex-tabs {
+    grid-template-columns: 1fr;
+  }
+
+  /* En-tete du Codex plus compact sur telephone. */
+  .codex-hero {
+    padding: 22px;
+  }
+
+  /* Resume du Codex aligne aux marges mobiles. */
+  .codex-summary {
+    margin: 18px 22px 0;
+  }
+
+  /* Lecture du Codex avec marges mobiles. */
+  .markdown-reader {
+    padding: 8px 22px 28px;
+  }
+
   /* Scene et dialogue encore plus compacts sur telephone. */
   .novel-layout {
-    gap: 10px;
-    grid-template-rows: minmax(300px, 46vh) auto;
+    grid-template-rows: minmax(600px, calc(100vh - 118px));
   }
 
   /* Hauteur minimale de l'image sur telephone. */
   .scene-frame {
-    min-height: 300px;
+    min-height: 600px;
   }
 
   /* Badges flottants rapproches du bord sur telephone. */
@@ -108,14 +184,70 @@
   }
 
   /* Grand titre de scene ajuste aux petits ecrans. */
+  .scene-copy {
+    top: 72px;
+    bottom: auto;
+    max-width: calc(100% - 40px);
+  }
+
+  /* Grand titre de scene ajuste aux petits ecrans. */
   .scene-copy h2 {
     max-width: 90%;
     font-size: clamp(1.75rem, 12vw, 3.4rem);
   }
 
+  /* Boite de dialogue integree dans le bas de scene sur telephone. */
+  .dialogue-box {
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    max-height: 54%;
+    padding: 16px;
+  }
+
+  /* Personnage reduit pour ne pas cacher les badges sur telephone. */
+  .scene-character {
+    right: -22px;
+    bottom: clamp(300px, 48vh, 350px);
+    width: min(56vw, 230px);
+    max-height: 38%;
+    opacity: 0.96;
+  }
+
+  /* Sprites PNJ gardes visibles sans recouvrir toute la scene mobile. */
+  .scene-character-npc {
+    right: -26px;
+    bottom: clamp(294px, 47vh, 340px);
+    width: min(60vw, 250px);
+    max-height: 38%;
+  }
+
   /* Texte de dialogue plus dense en mobile. */
   .dialogue-box p {
     line-height: 1.55;
+  }
+
+  /* Dialogue avec portrait en deux colonnes compactes sur telephone. */
+  .dialogue-box.with-portrait .dialogue-main {
+    grid-template-columns: 72px minmax(0, 1fr);
+    column-gap: 12px;
+  }
+
+  /* Cadre portrait reduit sur telephone. */
+  .speaker-portrait {
+    width: 72px;
+    height: 72px;
+  }
+
+  /* Image portrait recentree sur le visage en mobile. */
+  .speaker-portrait img {
+    width: 138%;
+    height: 138%;
+  }
+
+  /* Texte et choix compresses a cote du portrait en mobile. */
+  .dialogue-content {
+    min-height: 72px;
   }
 
   /* Choix empiles verticalement sur telephone. */
